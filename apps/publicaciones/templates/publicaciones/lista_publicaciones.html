@@ -1,0 +1,13 @@
+<h1>BLOG DE NOTICIAS</h1>
+<h2>Últimas Publicaciones</h2>
+
+{% for publicacion in publicaciones %}
+    <div>
+        <h3><a href="{% url 'publicaciones:detalle' slug=publicacion.slug pk=publicacion.pk %}">{{ publicacion.titulo }}</a></h3>
+        <p>Categoría: {{ publicacion.categoria }} | Autor: {{ publicacion.autor }}</p>
+        <p>{{ publicacion.contenido|truncatewords:30 }}</p>
+        <hr>
+    </div>
+{% empty %}
+    <p>Aún no hay publicaciones en el blog.</p>
+{% endfor %}

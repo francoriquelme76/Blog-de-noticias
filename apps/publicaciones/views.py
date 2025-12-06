@@ -1,48 +1,39 @@
-# publicaciones/views.py
 from django.shortcuts import render, get_object_or_404
-from .models import Publicacion
+from .models import Publicacion, Categoria # Importamos los modelos
 
-# ------------------------------
-# VISTA 1: LISTADO DE PUBLICACIONES (Página Principal)
-# ------------------------------
+# 1. Vista para la lista de publicaciones (Función)
 def lista_publicaciones(request):
     """
-    Muestra una lista de todas las publicaciones, ordenada por fecha.
-    Aquí se implementará el filtro (Requerimiento 5) más adelante.
+    Obtiene todas las publicaciones y las muestra en la página de inicio.
     """
+    # Consulta la base de datos para obtener todas las publicaciones
+    publicaciones = Publicacion.objects.all()
     
-    # Obtiene todas las publicaciones de la base de datos
-    # El .order_by('-fecha_creacion') ya está definido en models.py
-    publicaciones = Publicacion.objects.all() 
-
-    context = {
+    # Prepara el contexto (los datos que se enviarán al template)
+    contexto = {
         'publicaciones': publicaciones,
-        'titulo': 'Portal de Noticias'
+        'titulo': 'Blog de Noticias',
     }
     
-    # Renderiza el template que aún no hemos creado (publicaciones/lista.html)
-    return render(request, 'publicaciones/lista.html', context)
+    # Renderiza (muestra) el template HTML con los datos
+    return render(request, 'publicaciones/lista_publicaciones.html', contexto)
 
-# ------------------------------
-# VISTA 2: DETALLE DE PUBLICACIÓN
-# ------------------------------
+# 2. Vista para el detalle de un artículo (Función)
 def detalle_publicacion(request, pk, slug):
     """
-    Muestra el contenido completo de una publicación específica.
-    Usa el ID (pk) y el slug para buscar.
+    Obtiene una publicación específica usando su ID (pk) y slug.
     """
-    
-    # Busca la publicación por su ID y slug, si no la encuentra, devuelve un error 404
+    # Usa get_object_or_404 para buscar la Publicacion por su ID (pk) y slug
+    # Si no la encuentra, Django automáticamente retorna un error 404 (página no encontrada)
     publicacion = get_object_or_404(
         Publicacion, 
         pk=pk, 
         slug=slug
     )
     
-    context = {
+    contexto = {
         'publicacion': publicacion,
-        'titulo': publicacion.titulo
+        'titulo': publicacion.titulo,
     }
     
-    # Renderiza el template de detalle (publicaciones/detalle.html)
-    return render(request, 'publicaciones/detalle.html', context)
+    return render(request, 'publicaciones/detalle_publicacion.html', contexto)
