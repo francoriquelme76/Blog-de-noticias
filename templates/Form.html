@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog de Noticias</title>
+    <link rel="stylesheet" href="css/Form.css">
+
+</head>
+<body>
+    
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="#">Categorías</a></li>
+                <li><a href="AcercaDe.html">Acerca de</a></li>
+                <li><a href="#">Contacto</a></li>
+            
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="contact-section">
+            <h2 class="section-title">Hablemos</h2>
+            <p class="section-description">Si tienes alguna pregunta, sugerencia o propuesta de colaboración, por favor, rellena el siguiente formulario y nos pondremos en contacto contigo lo antes posible.</p>
+
+            <form action="{% url 'enviar_contacto' %}" method="POST" class="contact-form">
+                
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo:</label>
+                    <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre y apellido">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Correo Electrónico:</label>
+                    <input type="email" id="email" name="email" required placeholder="tu.correo@ejemplo.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="asunto">Asunto:</label>
+                    <input type="text" id="asunto" name="asunto" placeholder="Motivo de tu mensaje">
+                </div>
+
+                <div class="form-group">
+                    <label for="mensaje">Mensaje:</label>
+                    <textarea id="mensaje" name="mensaje" required rows="6" placeholder="Escribe aquí tu consulta o mensaje..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+            </form>
+        </section>
+    
+        <section class="contact-info">
+            <h3>Información Adicional</h3>
+            <ul>
+                <li>📧 Email: <a href="mailto:contacto@miblog.com">RedCampo2025@miblog.com</a></li>
+                <li>🔗 Redes Sociales: RedCampo.2025</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Informatorio Chaco - Desarrollo Web</p>
+        <p>Síguenos en redes sociales.</p>
+    </footer>
+</body>
+</html>
+   
