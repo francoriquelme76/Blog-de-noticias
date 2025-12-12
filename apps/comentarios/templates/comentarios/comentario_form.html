@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Editar Comentario{% endblock titulo %}
+
+{% block contenido %}
+
+    <div class="container mt-5">
+        <h2>Editar Comentario</h2>
+
+        {# Muestra el título de la publicación que se está comentando #}
+        <p class="text-muted">Publicación: **{{ comentario.publicacion.titulo }}**</p>
+        
+        {# El form se pasa automáticamente desde la UpdateView #}
+        <form method="post">
+            {% csrf_token %}
+            
+            {# Renderiza los campos del formulario #}
+            {{ form.as_p }}
+
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            
+            {# Botón para cancelar y volver al detalle del artículo #}
+            <a href="{{ comentario.publicacion.get_absolute_url }}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+
+{% endblock contenido %}

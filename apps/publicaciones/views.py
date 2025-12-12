@@ -26,10 +26,17 @@ def lista_publicaciones(request):
     publicaciones = Publicacion.objects.all().order_by('-fecha_creacion')
     categorias = Categoria.objects.all()
     
+    # 🚨 INICIO DE LA CORRECCIÓN 🚨
+    # Verificamos si el usuario tiene el permiso de crear publicaciones (Colaborador)
+    puede_crear = request.user.is_authenticated and request.user.has_perm('publicaciones.add_publicacion')
+    # 🚨 FIN DE LA CORRECCIÓN 🚨
+    
     contexto = {
         'object_list': publicaciones,
         'titulo': 'Últimas Publicaciones',
         'categorias': categorias, # Pasamos las categorías a la plantilla
+        # 🚨 PASAMOS LA VARIABLE BOLEANA AL CONTEXTO 🚨
+        'puede_crear': puede_crear,
     }
     
     return render(request, 'publicaciones/lista_publicaciones.html', contexto) 
@@ -48,41 +55,19 @@ def detalle_publicacion(request, pk, slug):
     )
     
     # Obtener solo los comentarios aprobados de esta publicación
-    # 🚨 CORRECCIÓN CLAVE: Se usa 'comentarios' (el related_name definido en el modelo Comentario) 🚨
     comentarios = publicacion.comentarios.filter(aprobado=True) 
     
-    comentario_form = None
-    if request.user.is_authenticated: # Solo usuarios logueados pueden comentar
-        comentario_form = ComentarioForm() # Inicializar el formulario aquí
-        
-        if request.method == 'POST':
-            # Procesar el formulario enviado (POST)
-            comentario_form = ComentarioForm(data=request.POST)
-            if comentario_form.is_valid():
-                # Crear el objeto comentario, pero aún sin guardar en la BD
-                nuevo_comentario = comentario_form.save(commit=False)
-                
-                # Asignar la publicación y el autor (usuario logueado)
-                nuevo_comentario.publicacion = publicacion
-                nuevo_comentario.autor = request.user
-                
-                # Guardar el comentario
-                nuevo_comentario.save()
-                
-                # Redirigir para evitar que el comentario se envíe dos veces
-                # Usar el PK y Slug es la mejor práctica para evitar errores
-                return redirect('publicaciones:detalle', pk=publicacion.pk, slug=publicacion.slug)
-    
-    # Si el usuario es anónimo (o GET), el formulario se inicializará para pasarlo al contexto
-    # Lo hemos inicializado al inicio de la rama 'is_authenticated'
+    # 🚨 CORRECCIÓN CLAVE: Inicializar el formulario aquí para pasarlo al contexto
+    comentario_form = ComentarioForm() 
     
     contexto = {
         'publicacion': publicacion,
         'comentarios': comentarios,      
-        'comentario_form': comentario_form, # Será el formulario si está logueado, o None si es anónimo
+        'form': comentario_form,
     }
     
     return render(request, 'publicaciones/detalle_publicacion.html', contexto)
+
 
 # 3. Vista para crear una publicación (Clase)
 class PublicacionCrearView(PermissionRequiredMixin, CreateView):
@@ -148,11 +133,18 @@ def publicaciones_por_categoria(request, slug_categoria):
     # Pasamos todas las categorías para que el menú de categorías siga funcionando
     categorias = Categoria.objects.all()
     
+    # 🚨 INICIO DE LA CORRECCIÓN 🚨
+    # Verificamos si el usuario tiene el permiso de crear publicaciones (Colaborador)
+    puede_crear = request.user.is_authenticated and request.user.has_perm('publicaciones.add_publicacion')
+    # 🚨 FIN DE LA CORRECCIÓN 🚨
+    
     contexto = {
         'object_list': publicaciones,
         'titulo': f'Noticias de {categoria.nombre}', 
         'categorias': categorias, 
         'categoria_actual': categoria,
+        # 🚨 PASAMOS LA VARIABLE BOLEANA AL CONTEXTO 🚨
+        'puede_crear': puede_crear,
     }
     
     return render(request, 'publicaciones/lista_publicaciones.html', contexto)

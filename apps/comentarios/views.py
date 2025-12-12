@@ -1,61 +1,68 @@
 # apps/comentarios/views.py
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-
-# 🚨 CORRECCIÓN CLAVE: Se usa la ruta completa 'apps.publicaciones' 
-# para resolver el RuntimeError debido a la estructura de carpetas anidadas.
-from apps.publicaciones.models import Publicacion 
-
 from django.urls import reverse_lazy
+# 🚨 CORRECCIÓN 1: Agregar importaciones necesarias para la función agregar_comentario
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required 
 from django.views.generic.edit import DeleteView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from .models import Comentario
 from .forms import ComentarioForm
+# 🚨 CORRECCIÓN 1: Importar el modelo Publicacion de la aplicación correspondiente
+from apps.publicaciones.models import Publicacion 
 
 
-@login_required # <--- RESTRICCIÓN: Solo usuarios autenticados (Nivel 2 y 3) pueden acceder
+# <--- VISTA BASADA EN FUNCIÓN (FBV) PARA AGREGAR COMENTARIOS --->
+
+@login_required # RESTRICCIÓN: Solo usuarios autenticados (Nivel 2 y 3) pueden acceder
 def agregar_comentario(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, pk=publicacion_id)
 
     if request.method == 'POST':
+        # Instancia el formulario con los datos POST
         form = ComentarioForm(request.POST)
+        
         if form.is_valid():
             
-            # no guarda directamente, solamente crea el objeto
+            # Crear el objeto, pero sin guardar en la BD aún
             comentario = form.save(commit=False)
 
-            # Asigna claves externas de autor y publicacion
+            # Asigna claves externas de autor (usuario logueado) y publicacion
             comentario.autor = request.user
             comentario.publicacion = publicacion
 
             # Guardar comentario en BDD
             comentario.save()
 
-            # redirigir al detalle de la publicacion
+            # Redirigir al detalle de la publicacion
             # Usamos el método get_absolute_url() para una redirección robusta
             return redirect(publicacion.get_absolute_url()) 
-        
-    # Si hay un error en el formulario (o si es GET)
+        else:
+            # Si el formulario no es válido, redirigir y mostrar la publicación
+            # El usuario verá la publicación con el formulario vacío (GET) y deberá intentarlo de nuevo.
+            # En un entorno real, pasarías el formulario inválido al render, pero con redirect es más simple.
+            return redirect(publicacion.get_absolute_url())
+    
+    # 🚨 MEJORA: Si es GET a esta URL sin querer, simplemente redirige a la publicación.
     return redirect(publicacion.get_absolute_url())
 
 
-# Mixin de Seguridad: Define quién puede ejecutar la acción
+# <--- VISTAS BASADAS EN CLASES (CBV) PARA EDICIÓN Y ELIMINACIÓN --->
+
+# Mixin de Seguridad: Define quién puede ejecutar la acción (Autor o Superusuario)
 class AutorComentarioOAdminMixin(UserPassesTestMixin):
+    """
+    Permite el acceso a la vista solo si:
+    1. El usuario logueado es el autor del comentario.
+    2. El usuario logueado es un superusuario (Admin).
+    """
     def test_func(self):
         comentario = self.get_object()
         
-        # El usuario es el autor del comentario O el rol es 'Admin'
-        # NOTA: Si no tienes el campo 'rol' en el modelo User, 'self.request.user.is_superuser' es la alternativa.
-        # Ajusta esta línea según tu modelo de usuario personalizado.
         es_autor = self.request.user == comentario.autor
-        es_admin = self.request.user.is_superuser # Usamos is_superuser como fallback/alternativa a 'rol == Admin'
+        es_admin = self.request.user.is_superuser 
         
-        # Asumiendo que tu usuario tiene el campo 'rol':
-        # return es_autor or self.request.user.rol == 'Admin'
-        
-        # Usando la superposición de Django:
         return es_autor or es_admin
 
 
@@ -65,6 +72,7 @@ class ComentarioDeleteView(LoginRequiredMixin, AutorComentarioOAdminMixin, Delet
     
     def get_success_url(self):
         # Redirige al URL de la publicación después de eliminar
+        # Usamos self.object para acceder al comentario que se acaba de eliminar
         return self.object.publicacion.get_absolute_url()
 
 
@@ -74,5 +82,6 @@ class ComentarioUpdateView(LoginRequiredMixin, AutorComentarioOAdminMixin, Updat
     template_name = 'comentarios/comentario_form.html'
 
     def get_success_url(self):
-        # redirige al detalle de la publicacion despues de editar
+        # Redirige al detalle de la publicacion después de editar
+        # Usamos self.object para acceder al comentario que se acaba de editar
         return self.object.publicacion.get_absolute_url()

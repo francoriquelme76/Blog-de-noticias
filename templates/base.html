@@ -5,65 +5,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block titulo %}Blog de Noticias{% endblock titulo %}</title>
-    </head>
+
+    {# Enlazar tu archivo CSS estático (asumiendo que tienes una carpeta 'static') #}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
 <body>
 
     <header>
         <h1><a href="{% url 'publicaciones:lista' %}">BLOG DE NOTICIAS</a></h1>
         
-        {# Ocultar la navegación principal en Login/Registro #}
-        {% if request.path != '/accounts/login/' and request.path != '/usuarios/registro/' %}
-            <nav>
-                <ul class="nav-links">
-                    
-                    {# 1. VISUALIZAR UNA CATEGORÍA (Visible para todos) #}
-                    {# El enlace usa un parámetro GET para que lista_publicaciones.html sepa que debe mostrar las opciones de categoría #}
-                    <li><a href="{% url 'publicaciones:lista' %}?mostrar_categorias=true">Visualizar una Categoría</a></li> 
-                    
-                    {% if user.is_authenticated %}
-                        
-                        {# OPCIONES DE COLABORADOR REGISTRADO #}
-                        <li>Hola, <b>{{ user.username }}</b></li>
-                        
-                        {# 2. REGISTRAR UNA PUBLICACION (Publicar) #}
-                        <li><a href="{% url 'publicaciones:crear' %}">Registrar Publicación</a></li>
-                        
-                        {# 3. CERRAR SESIÓN #}
-                        <li>
-                            <form action="{% url 'logout' %}" method="post" style="display: inline;">
-                                {% csrf_token %} 
-                                <button type="submit" style="border: none; background: none; color: inherit; cursor: pointer; padding: 0;">Cerrar Sesión</button>
-                            </form>
-                        </li>
-                        
-                    {% else %} 
-                        {# OPCIONES DE VISITANTE ANÓNIMO #}
-                        
-                        {# 2. REGÍSTRATE COMO VISITANTE #}
-                        <li><a href="{% url 'usuarios:registro' %}">Regístrate como Visitante</a></li> 
-                        <li><a href="{% url 'login' %}">Iniciar Sesión</a></li>
-                        
-                    {% endif %}
-                </ul>
-            </nav>
-        {% endif %}
+        <nav>
+            {# 1. Enlace a la lista principal #}
+            <a href="{% url 'publicaciones:lista' %}">Inicio</a>
+            
+            {# 2. LÓGICA DE REGISTRO/INICIO DE SESIÓN #}
+            {% if user.is_authenticated %}
+                <span>Hola, <b>{{ user.username }}</b> | </span>
+                
+                {# 🚨 CORRECCIÓN CLAVE: Eliminamos el namespace 'auth:' y usamos solo 'logout' 🚨 #}
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: none; color: inherit; padding: 0; cursor: pointer;">
+                        Cerrar Sesión
+                    </button>
+                </form>
+
+                {# 3. Botón para crear publicación (usa la variable de la vista) #}
+                {% if puede_crear %} 
+                    | <a href="{% url 'publicaciones:crear' %}">
+                        <button>Registrar Publicacion</button>
+                    </a>
+                {% endif %}
+                
+                {# 4. Puedes añadir un enlace al Admin si eres superusuario (opcional) #}
+                {% if user.is_superuser %}
+                    | <a href="{% url 'admin:index' %}">Panel Admin</a>
+                {% endif %}
+
+            {% else %}
+                {# 🚨 CORRECCIÓN CLAVE: Eliminamos el namespace 'auth:' y usamos solo 'login' 🚨 #}
+                <a href="{% url 'login' %}">Iniciar Sesión</a>
+            {% endif %}
+
+        </nav>
     </header>
 
-    <main>
+    <main class="container">
         {% block contenido %}
-        
-        {# MENSAJE PARA VISITANTES ANÓNIMOS EN LA PÁGINA PRINCIPAL #}
-        {% if not user.is_authenticated and request.path == '/' %}
-            <div style="border-left: 5px solid #007bff; padding: 10px; margin-bottom: 20px; background-color: #e9f7fe;">
-                <p>Obs. Si quieres dejar tu comentario sobre una Publicación, haz clic sobre el Título de la Publicación y te pediremos iniciar sesión.</p>
-            </div>
-        {% endif %}
-
+        {# Aquí se inyectará el contenido específico de cada plantilla #}
         {% endblock contenido %}
     </main>
 
     <footer>
-        <p>&copy; 2025 Mi Primer Web Blog de Noticias</p>
+        <p>© 2025 Mi Primer Web Blog de Noticias</p>
     </footer>
 
 </body>

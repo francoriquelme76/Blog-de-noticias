@@ -2,9 +2,11 @@
 
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings # Necesario para media/static en DEBUG
-from django.conf.urls.static import static # Necesario para media/static en DEBUG
+from django.conf import settings
+from django.conf.urls.static import static
 
+# 🚨 Importación CRÍTICA para las URLs de autenticación de Django 🚨
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -14,11 +16,11 @@ urlpatterns = [
     path('cuentas/', include('apps.usuarios.urls', namespace='usuarios')), 
     
     # 2. LOGIN, LOGOUT, PASSWORD RESET, etc. (Usamos el set completo de Django)
-    # Patrón: /cuentas/login/, /cuentas/logout/, etc.
+    # 🚨 CORRECCIÓN CLAVE: Eliminamos 'name='auth' para evitar el KeyError/NoReverseMatch 🚨
+    # Ahora las URLS se buscarán como 'login' y 'logout' (sin namespace)
     path('cuentas/', include('django.contrib.auth.urls')),
     
     # 3. URLs de la aplicación COMENTARIOS
-    # ¡CRÍTICO! Esto registra el namespace 'comentarios' que tu plantilla necesita.
     # Patrón: /comentarios/
     path('comentarios/', include('apps.comentarios.urls', namespace='comentarios')),
     

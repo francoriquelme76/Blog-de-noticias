@@ -5,20 +5,31 @@
     {# Título dinámico: Usa el nombre de la categoría si estamos filtrando, sino usa "Últimas Publicaciones" #}
     <h2>{% if categoria_actual %}Noticias de {{ categoria_actual.nombre }}{% else %}Últimas Publicaciones{% endif %}</h2>
     
+    {# ----------------------------------------------------------- #}
+    {# 🚨 LEYENDA DE GUÍA PARA VISITANTES ANÓNIMOS (CORRECCIÓN AÑADIDA) 🚨 #}
+    {% if not user.is_authenticated %}
+    <div style="background-color: #f0f8ff; border: 1px solid #cceeff; padding: 10px; margin-bottom: 20px; border-radius: 5px; color: #333;">
+        <p style="margin: 0;">
+            👋 **¡Bienvenido Visitante!** Para **leer el artículo completo** y poder **dejar un comentario**, haz **CLIC sobre el título** de la publicación que te interese.
+        </p>
+    </div>
+    {% endif %}
+    {# ----------------------------------------------------------- #}
+
     {# 🚨 INICIO DE LA LÓGICA DE CATEGORÍAS 🚨 #}
-    {# Muestra el menú de categorías si el usuario lo pidió (request.GET.mostrar_categorias) o si ya está viendo una categoría (categoria_actual) #}
-    {% if request.GET.mostrar_categorias or categoria_actual %}
+    {# CORRECCIÓN: El menú se muestra siempre que la lista 'categorias' no esté vacía, eliminando la condición de GET #}
+    {% if categorias %}
         <h3>Selecciona una Categoría:</h3>
         <ul style="list-style: none; padding: 0;">
             {% for categoria in categorias %}
                 <li style="display: inline; margin-right: 15px;">
-                    {# El enlace que filtra por categoría (usa la nueva URL 'por_categoria') #}
+                    {# El enlace que filtra por categoría #}
                     <a href="{% url 'publicaciones:por_categoria' slug_categoria=categoria.slug %}">
                         [ {{ categoria.nombre }} ]
                     </a>
                 </li>
             {% empty %}
-                <p>No hay categorías disponibles. (Revisa si creaste categorías en /admin/)</p>
+                 <p>No hay categorías disponibles. (Revisa si creaste categorías en /admin/)</p>
             {% endfor %}
         </ul>
         <hr>

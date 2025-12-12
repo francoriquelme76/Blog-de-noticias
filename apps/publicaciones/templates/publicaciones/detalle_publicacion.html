@@ -1,5 +1,4 @@
 {% extends 'base.html' %} 
-{# Nota: Usualmente se extiende 'base.html' directamente, a menos que tengas un base.html específico para la app 'publicaciones' #}
 
 {% block titulo %}{{ publicacion.titulo }}{% endblock titulo %}
 
@@ -28,30 +27,47 @@
                     <button>Editar Publicación</button>
                 </a>
             </p>
-            {# Opcional: Si implementamos la eliminación más tarde, iría aquí #}
         {% endif %}
 
     </article>
 
-    <h3>Comentarios ({{ comentarios.count }})</h3>
+    <hr>
     
-    {% for comentario in comentarios %}
+    {# 🚨 CORRECCIÓN 1: Usar publicacion.comentarios.all para acceder a la lista 🚨 #}
+    <h3 class="mt-4">Comentarios ({{ publicacion.comentarios.count }})</h3>
+    
+    {% for comentario in publicacion.comentarios.all %}
         <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-            <p><strong>{{ comentario.autor.username }}</strong> dice:</p>
-            <p>{{ comentario.texto }}</p>
-            <small>{{ comentario.fecha_creacion|date:"d M Y H:i" }}</small>
+            <p>
+                <strong>{{ comentario.autor.username }}</strong> dice:
+                <small style="float: right;">{{ comentario.fecha_creacion|date:"d M Y H:i" }}</small>
+            </p>
+            <p>{{ comentario.contenido }}</p>
+            
+            {# LÓGICA DE EDICIÓN/ELIMINACIÓN DE COMENTARIO #}
+            {% if user.is_authenticated and user == comentario.autor or user.is_superuser %}
+                <small>
+                    <a href="{% url 'comentarios:editar' comentario.pk %}">Editar</a> |
+                    <a href="{% url 'comentarios:eliminar' comentario.pk %}">Eliminar</a>
+                </small>
+            {% endif %}
         </div>
     {% empty %}
         <p>Sé el primero en comentar.</p>
     {% endfor %}
 
-    {# 🚨 SECCIÓN CORREGIDA: Restricción para comentar 🚨 #}
+    <hr>
+
+    {# 🚨 SECCIÓN COMENTAR: Usamos 'form' si es el nombre con el que se pasa desde la vista 🚨 #}
     {% if user.is_authenticated %}
         <h4>Deja tu comentario</h4>
         {# El action del formulario debe apuntar a la URL de tu vista agregar_comentario #}
         <form method="post" action="{% url 'comentarios:agregar' publicacion_id=publicacion.pk %}">
             {% csrf_token %}
-            {{ comentario_form.as_p }}
+            
+            {# Asumo que el formulario se llama 'form' o 'comentario_form' en la vista #}
+            {{ form.as_p }} 
+            
             <button type="submit">Enviar Comentario</button>
         </form>
     {% else %}

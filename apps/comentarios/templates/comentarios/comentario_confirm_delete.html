@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Eliminar Comentario{% endblock titulo %}
+
+{% block contenido %}
+
+    <div class="container mt-5">
+        
+        <h2 class="text-danger">⚠️ Confirmar Eliminación</h2>
+
+        <p class="text-muted">
+            Estás a punto de eliminar el siguiente comentario. Esta acción es irreversible.
+        </p>
+
+        <div class="card p-3 mb-4 bg-light">
+            <p>
+                <strong>Publicación:</strong> {{ comentario.publicacion.titulo }}<br>
+                <strong>Autor:</strong> {{ comentario.autor.username }}<br>
+                <strong>Contenido:</strong> 
+            </p>
+            <blockquote class="blockquote border-left pl-3">
+                "{{ comentario.contenido }}"
+            </blockquote>
+        </div>
+        
+        {# El form se pasa automáticamente desde la DeleteView #}
+        <form method="post">
+            {% csrf_token %}
+            
+            <p>¿Estás **seguro** que deseas eliminar este comentario?</p>
+
+            <button type="submit" class="btn btn-danger mr-2">Sí, Eliminar</button>
+            
+            {# Botón para cancelar y volver al detalle del artículo #}
+            <a href="{{ comentario.publicacion.get_absolute_url }}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+
+{% endblock contenido %}
