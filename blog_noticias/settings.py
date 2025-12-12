@@ -14,7 +14,7 @@ import sys
 # BASE_DIR apunta al directorio raíz del proyecto (un nivel por encima de 'blog_noticias')
 BASE_DIR = Path(__file__).resolve().parent.parent 
 
-
+# Agrega la carpeta 'apps' al path para que Django encuentre las aplicaciones anidadas
 sys.path.insert(0, str(BASE_DIR / "apps"))
 
 
@@ -38,7 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+<<<<<<< HEAD
     # Aplicaciones locales:
+=======
+    # Aplicaciones Personalizadas (Usando la ruta completa para evitar RuntimeError)
+>>>>>>> 4f114730af45f235e4354b8ed00145427861897c
     'apps.usuarios.apps.UsuariosConfig',
     'apps.publicaciones.apps.PublicacionesConfig',
     'apps.comentarios.apps.ComentariosConfig',
@@ -116,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-ar' 
 
 TIME_ZONE = 'UTC'
 
@@ -130,16 +134,33 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+<<<<<<< HEAD
 # 🌟 AGREGAR ESTA LÍNEA 🌟
 # Directorios adicionales donde Django buscará archivos estáticos
 STATICFILES_DIRS = [
     BASE_DIR / "static", # Apunta a la carpeta 'static' en la raíz del proyecto
 ]
+=======
+# CONFIGURACIÓN DE MEDIA (Archivos subidos por el usuario)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+>>>>>>> 4f114730af45f235e4354b8ed00145427861897c
 
-# Configuraciones de Autenticación
-# Define la URL a la que el usuario será redirigido después de iniciar sesión exitosamente.
+
+# CONFIGURACIÓN DE AUTENTICACIÓN
+# URL a la que se redirige después de un inicio de sesión exitoso
 LOGIN_REDIRECT_URL = '/'
 
+<<<<<<< HEAD
 # Permite que el enlace directo de Cerrar Sesión funcione sin el formulario POST.
 # Esto soluciona el ERROR 405 al anular el requisito de seguridad.
 LOGOUT_REDIRECT_URL = '/'
+=======
+# URL a la que se redirige si el usuario necesita iniciar sesión
+LOGIN_URL = '/cuentas/login/' 
+
+# URL a la que se redirige después de un cierre de sesión exitoso
+LOGOUT_REDIRECT_URL = '/'
+
+# Fin del archivo settings.py
+>>>>>>> 4f114730af45f235e4354b8ed00145427861897c

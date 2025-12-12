@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %} 
 {% comment %} 
     Extiende 'base.html' (encontrado en el DIRS del proyecto)
@@ -16,5 +17,57 @@
         {% endfor %}
     </div>
 </div>
+=======
+{% extends 'base.html' %}
+
+{% block contenido %}
+
+    {# Título dinámico: Usa el nombre de la categoría si estamos filtrando, sino usa "Últimas Publicaciones" #}
+    <h2>{% if categoria_actual %}Noticias de {{ categoria_actual.nombre }}{% else %}Últimas Publicaciones{% endif %}</h2>
+    
+    {# 🚨 INICIO DE LA LÓGICA DE CATEGORÍAS 🚨 #}
+    {# Muestra el menú de categorías si el usuario lo pidió (request.GET.mostrar_categorias) o si ya está viendo una categoría (categoria_actual) #}
+    {% if request.GET.mostrar_categorias or categoria_actual %}
+        <h3>Selecciona una Categoría:</h3>
+        <ul style="list-style: none; padding: 0;">
+            {% for categoria in categorias %}
+                <li style="display: inline; margin-right: 15px;">
+                    {# El enlace que filtra por categoría (usa la nueva URL 'por_categoria') #}
+                    <a href="{% url 'publicaciones:por_categoria' slug_categoria=categoria.slug %}">
+                        [ {{ categoria.nombre }} ]
+                    </a>
+                </li>
+            {% empty %}
+                <p>No hay categorías disponibles. (Revisa si creaste categorías en /admin/)</p>
+            {% endfor %}
+        </ul>
+        <hr>
+        
+        {# Opción para volver a la lista completa si estamos en una vista filtrada #}
+        {% if categoria_actual %}
+            <p><a href="{% url 'publicaciones:lista' %}">Mostrar todas las publicaciones</a></p>
+            <hr>
+        {% endif %}
+    {% endif %}
+
+    {# 🚨 FIN DE LA LÓGICA DE CATEGORÍAS 🚨 #}
+
+    {# Lista de Publicaciones #}
+    {% for publicacion in object_list %}
+    <article style="border-bottom: 1px dashed #ccc; padding-bottom: 15px; margin-bottom: 15px;">
+        <h3>
+            {# Asegúrate de que el título es un enlace para ir al detalle #}
+            <a href="{% url 'publicaciones:detalle' slug=publicacion.slug pk=publicacion.pk %}">
+                {{ publicacion.titulo }}
+            </a>
+        </h3>
+        <p>Categoría: **{{ publicacion.categoria.nombre }}** | Autor: **{{ publicacion.autor.username }}**</p>
+        <p>{{ publicacion.contenido|truncatewords:20 }}</p> 
+        <hr>
+    </article>
+    {% empty %}
+        <p>No hay publicaciones disponibles en esta sección {% if categoria_actual %}para la categoría "{{ categoria_actual.nombre }}"{% endif %}.</p>
+    {% endfor %}
+>>>>>>> 4f114730af45f235e4354b8ed00145427861897c
 
 {% endblock contenido %}

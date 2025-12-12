@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+<<<<<<< HEAD
 {% load static %}
 
 {% block title %}Iniciar Sesión{% endblock title %}
@@ -40,5 +41,22 @@
             ¿Olvidaste tu contraseña? <a href="{% url 'password_reset' %}" class="link-reset">Restablecer</a>
         </p>
     </div>
+=======
+
+{% block contenido %}
+    
+    <h2>Iniciar Sesión</h2>
+    
+    {# 🚨 Verifica que esta línea esté escrita correctamente. Debe ser 'form.as_p' #}
+    <form method="post">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+        
+        <button type="submit">Iniciar Sesión</button>
+        
+        <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+>>>>>>> 4f114730af45f235e4354b8ed00145427861897c
 
 {% endblock contenido %}

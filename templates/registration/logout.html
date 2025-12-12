@@ -1,3 +1,4 @@
+{% extends "base.html" %}
 <h2>¿Seguro que quieres cerrar sesión?</h2>
 <form method="post" action="{% url 'logout' %}">
     {% csrf_token %}

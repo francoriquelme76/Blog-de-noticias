@@ -1,5 +1,61 @@
-{% extends 'publicaciones/base.html' %}
+{% extends 'base.html' %} 
+{# Nota: Usualmente se extiende 'base.html' directamente, a menos que tengas un base.html específico para la app 'publicaciones' #}
+
+{% block titulo %}{{ publicacion.titulo }}{% endblock titulo %}
 
 {% block contenido %}
+
+    <article>
+        <h2>{{ publicacion.titulo }}</h2>
+        
+        <p>
+            Categoría: <b>{{ publicacion.categoria }}</b> | 
+            Autor: <b>{{ publicacion.autor }}</b> | 
+            Publicado el: {{ publicacion.fecha_creacion|date:"d M Y" }}
+        </p>
+
+        <hr>
+
+        <p>{{ publicacion.contenido }}</p>
+
+        <hr>
+
+        {# LÓGICA DE EDICIÓN: El botón solo aparece si el usuario logueado es el autor #}
+        {% if user.is_authenticated and user == publicacion.autor %}
+            <p>
+                {# Usamos la URL 'publicaciones:editar' que definimos en urls.py #}
+                <a href="{% url 'publicaciones:editar' pk=publicacion.pk %}">
+                    <button>Editar Publicación</button>
+                </a>
+            </p>
+            {# Opcional: Si implementamos la eliminación más tarde, iría aquí #}
+        {% endif %}
+
+    </article>
+
+    <h3>Comentarios ({{ comentarios.count }})</h3>
+    
+    {% for comentario in comentarios %}
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+            <p><strong>{{ comentario.autor.username }}</strong> dice:</p>
+            <p>{{ comentario.texto }}</p>
+            <small>{{ comentario.fecha_creacion|date:"d M Y H:i" }}</small>
+        </div>
+    {% empty %}
+        <p>Sé el primero en comentar.</p>
+    {% endfor %}
+
+    {# 🚨 SECCIÓN CORREGIDA: Restricción para comentar 🚨 #}
+    {% if user.is_authenticated %}
+        <h4>Deja tu comentario</h4>
+        {# El action del formulario debe apuntar a la URL de tu vista agregar_comentario #}
+        <form method="post" action="{% url 'comentarios:agregar' publicacion_id=publicacion.pk %}">
+            {% csrf_token %}
+            {{ comentario_form.as_p }}
+            <button type="submit">Enviar Comentario</button>
+        </form>
+    {% else %}
+        <p>Debes <a href="{% url 'login' %}">iniciar sesión</a> para comentar.</p>
+    {% endif %}
 
 {% endblock contenido %}
