@@ -1,0 +1,84 @@
+/* =======================================
+   Estilos específicos para Registro
+   Nota: Los estilos de .form-card, .form-title, .btn-submit y .form-field
+   se heredan o sobrescriben desde index.css para mantener coherencia.
+   ======================================= */
+
+/* Se asegura de que la tarjeta de formulario esté visible */
+.form-card {
+    max-width: 600px; /* Un poco más ancho para el formulario de registro */
+    margin: 30px auto;
+    padding: 30px;
+}
+
+/* Estilo para las ayudas (Help Text) de los campos */
+.help-text {
+    display: block;
+    font-size: 0.8em;
+    color: #7f8c8d; /* Gris suave */
+    margin-top: 5px;
+    padding-left: 2px;
+}
+
+/* Manejo de errores de campo */
+.error-text {
+    color: #e74c3c; /* Rojo de error */
+    font-size: 0.85em;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Estilos de los campos de entrada, asegurando que tomen el 100% del ancho */
+.form-field input[type="text"],
+.form-field input[type="password"],
+.form-field input[type="email"] {
+    /* Estas propiedades ya están en index.css, pero se reafirman para
+       garantizar que los estilos de registro sean los deseados */
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+/* Estilo para el hover/focus, heredado de index.css, pero clave para la experiencia */
+.form-field input:focus {
+    border-color: var(--color-primario, #1abc9c);
+    outline: none;
+    box-shadow: 0 0 5px rgba(26, 188, 156, 0.5);
+}
+
+/* Estilo para el enlace de inicio de sesión */
+.form-card a {
+    color: var(--color-primario, #1abc9c);
+    font-weight: bold;
+}
+
+/* Botón de envío (para login y registro) */
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-primario); /* Usa el color de acento (Verde Menta) */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    font-weight: bold;
+    margin-top: 10px;
+    box-shadow: 0 4px var(--color-primario-oscuro, #16a085); /* Sombra 3D sutil */
+}
+
+.btn-submit:hover {
+    background-color: #16a085; /* Un tono más oscuro de verde menta al pasar el mouse */
+    box-shadow: 0 2px var(--color-primario-oscuro, #16a085); /* Reduce la sombra */
+    transform: translateY(2px); /* Efecto de "presionar" */
+}
+
+.btn-submit:active {
+    background-color: #108068; /* Tono aún más oscuro al hacer click */
+    box-shadow: none;
+    transform: translateY(4px); /* Se presiona completamente */
+}

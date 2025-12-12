@@ -1,102 +1,91 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog de Noticias</title>
-    <link rel="stylesheet" href="css/AcercaDe.css">
+{% extends 'base.html' %} 
+{% load static %}
 
-</head>
-<body>
-    
-    <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="#">Categorías</a></li>
-                <li><a href="#">Acerca de</a></li>
-                <li><a href="Form.html">Contacto</a></li>
+{% block title %}Acerca de Red Campo{% endblock title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/AcercaDe.css' %}">
+{% endblock extra_css %}
+
+{% block contenido %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
             
-            </ul>
-        </nav>
-    </header>
+            <h1 class="text-center mb-4">Acerca de Nosotros</h1>
+            
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title">Nuestra Misión</h2>
+                    <p class="card-text">
+                        Bienvenido al blog <strong>Red campo</strong>. Este proyecto nació como parte del trabajo final para el Informatorio Chaco 2025.
+                        Nuestro objetivo es crear un espacio donde la comunidad pueda compartir conocimientos sobre la tecnología agrícola y su desarrollo, fomentando el aprendizaje colaborativo.
+                    </p>
+                </div>
+            </div>
 
-    <main class="container">
-        <div class="container mt-5">
+            <h3 class="mt-5 mb-3">El Equipo</h3>
             <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <h1 class="text-center mb-4">Acerca de Nosotros</h1>
-                    
-                    <div class="card mb-4 shadow-sm">
-                        <div class="card-body">
-                            <h2 class="card-title">Nuestra Misión</h2>
-                            <p class="card-text">
-                                Bienvenido al blog <strong>Red campo</strong>. Este proyecto nació como parte del trabajo final para el Informatorio Chaco 2025.
-                                Nuestro objetivo es crear un espacio donde la comunidad pueda compartir conocimientos sobre la tecnología agrícola y su desarrollo, fomentando el aprendizaje colaborativo.
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Tiago Gabriel Dominguez</h5>
+                            <p class="card-text text-muted">Desarrollador FrontEnd</p>
+                            <p class="card-text small">
+                                Estudiante del Informatorio Chaco. 
                             </p>
                         </div>
                     </div>
-
-                    <h3 class="mt-5 mb-3">El Equipo</h3>
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title">Tiago Gabriel Dominguez</h5>
-                                    <p class="card-text text-muted">Desarrollador FrontEnd</p>
-                                    <p class="card-text small">
-                                        Estudiante del Informatorio Chaco. 
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title">Santiago Portillo</h5>
-                                    <p class="card-text text-muted">Desarrollador FrontEnd</p>
-                                    <p class="card-text small">
-                                        Estudiante del Informatorio Chaco
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title">Juan de Dios Candia</h5>
-                                    <p class="card-text text-muted">Desarrollador Backend</p>
-                                    <p class="card-text small">
-                                        Estudiante del Informatorio Chaco. 
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title">Franco Riquelme</h5>
-                                    <p class="card-text text-muted">Desarrollador Backend</p>
-                                    <p class="card-text small">
-                                        Estudiante del Informatorio Chaco. 
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
                 </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Santiago Portillo</h5>
+                            <p class="card-text text-muted">Desarrollador FrontEnd</p>
+                            <p class="card-text small">
+                                Estudiante del Informatorio Chaco
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Juan de Dios Candia</h5>
+                            <p class="card-text text-muted">Desarrollador Backend</p>
+                            <p class="card-text small">
+                                Estudiante del Informatorio Chaco. 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Franco Riquelme</h5>
+                            <p class="card-text text-muted">Desarrollador Backend</p>
+                            <p class="card-text small">
+                                Estudiante del Informatorio Chaco. 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </main>
+    </div>
+</div>
 
-    <footer>
-        <p>&copy; 2025 Informatorio Chaco - Desarrollo Web</p>
-        <p>Síguenos en redes sociales.</p>
-    </footer>
-</body>
-</html>
+{% endblock contenido %}
+
+{% comment %} 
+    Asegúrate de que este bloque esté vacío si quieres usar el CSS global (index.css). 
+    Si quieres CSS adicional para esta página, lo añadirías aquí.
+{% endcomment %}
+{% block scripts %}
+{% endblock scripts %}

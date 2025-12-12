@@ -1,4 +1,47 @@
 {% extends 'base.html' %}
+<<<<<<< HEAD
+{% load static %}
+
+{% block title %}Iniciar Sesión{% endblock title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock extra_css %}
+
+{% block contenido %}
+    
+    <div class="form-card mx-auto">
+        <h2 class="form-title text-center mb-4">🔑 Iniciar Sesión</h2>
+        
+        {% if form.errors and form.non_field_errors %}
+            <div class="alert alert-danger mb-4">
+                {% for error in form.non_field_errors %}
+                    <p class="error-text">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" class="form-body">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="form-field">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <small class="error-text">{{ field.errors }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn-submit">Iniciar Sesión</button>
+        </form>
+
+        <p class="mt-4 text-center">
+            ¿Olvidaste tu contraseña? <a href="{% url 'password_reset' %}" class="link-reset">Restablecer</a>
+        </p>
+    </div>
+=======
 
 {% block contenido %}
     
@@ -14,5 +57,6 @@
         
         <input type="hidden" name="next" value="{{ next }}" />
     </form>
+>>>>>>> 4f114730af45f235e4354b8ed00145427861897c
 
 {% endblock contenido %}

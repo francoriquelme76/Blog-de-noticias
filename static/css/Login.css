@@ -1,0 +1,96 @@
+/* =======================================
+   Estilos específicos para Login (Visualmente Mejorado)
+   Sobrescribe o complementa index.css
+   ======================================= */
+
+/* 1. Tarjeta Principal (Form-Card) */
+.form-card {
+    max-width: 380px; /* Un poco más compacto */
+    margin: 60px auto; 
+    padding: 35px;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0); /* Fondo con ligero degradado */
+    border-radius: 16px;
+    /* Sombra más compleja y suave para un efecto flotante */
+    box-shadow: 
+        0 8px 15px rgba(0, 0, 0, 0.1), /* Sombra principal */
+        0 3px 6px rgba(0, 0, 0, 0.05); /* Sombra cercana */
+    transition: transform 0.3s ease;
+}
+
+
+/* 2. Título */
+.form-title {
+    font-size: 2.1em;
+    color: var(--color-secundario); /* Azul Oscuro */
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    /* Línea sutil de acento */
+    border-bottom: 2px solid var(--color-primario);
+    opacity: 0.9;
+}
+
+/* 3. Campos de Entrada */
+.form-field {
+    margin-bottom: 20px;
+}
+
+.form-field label {
+    font-weight: 600;
+    color: var(--color-texto);
+    font-size: 1em;
+}
+
+.form-field input[type="text"],
+.form-field input[type="password"] {
+    /* Mantenemos el estilo de index.css, pero refinamos el borde */
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Bordes más redondeados */
+    padding: 12px;
+    background-color: #f7f7f7; /* Fondo sutil para el input */
+}
+
+.form-field input:focus {
+    /* El foco usa el color primario, haciéndolo visualmente atractivo */
+    border-color: var(--color-primario);
+    box-shadow: 0 0 8px rgba(26, 188, 156, 0.3); 
+    background-color: white;
+}
+.error-text {
+    color: #e74c3c; /* Rojo de error */
+    font-size: 1em;
+    display: block;
+    padding: 0px;
+}
+/* Botón de envío (para login y registro) */
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-primario); /* Usa el color de acento (Verde Menta) */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    font-weight: bold;
+    margin-top: 10px;
+    box-shadow: 0 4px var(--color-primario-oscuro, #16a085); /* Sombra 3D sutil */
+}
+
+.btn-submit:hover {
+    background-color: #16a085; /* Un tono más oscuro de verde menta al pasar el mouse */
+    box-shadow: 0 2px var(--color-primario-oscuro, #16a085); /* Reduce la sombra */
+    transform: translateY(2px); /* Efecto de "presionar" */
+}
+
+.btn-submit:active {
+    background-color: #108068; /* Tono aún más oscuro al hacer click */
+    box-shadow: none;
+    transform: translateY(4px); /* Se presiona completamente */
+}
+/* 5. Enlace de Restablecer Contraseña */
+.link-reset {
+    font-size: 0.95em;
+    font-weight: 600;
+}

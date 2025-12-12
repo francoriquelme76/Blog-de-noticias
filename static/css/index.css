@@ -1,0 +1,306 @@
+/* ======================================================= */
+/* 1. VARIABLES Y CONFIGURACIÓN BASE                        */
+/* ======================================================= */
+:root {
+    --color-primario: #1abc9c;      /* Verde Menta (Acento) */
+    --color-secundario: #2c3e50;    /* Azul Oscuro (Navbar, Footer) */
+    --color-fondo: #ecf0f1;         /* Gris Claro (Fondo web) */
+    --color-texto: #333;            /* Gris Oscuro (Texto) */
+    --blanco: #ffffff;
+    --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+ul {
+    list-style: none;
+}
+
+/* ======================================================= */
+/* 2. HEADER Y NAVEGACIÓN PRINCIPAL (NAVBAR)               */
+/* ======================================================= */
+header {
+    background-color: var(--color-secundario);
+    box-shadow: var(--sombra);
+    position: sticky; 
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+nav > ul {
+    display: flex;
+    align-items: center;
+    height: 60px;
+}
+
+/* Estilo de los items del menú PRINCIPAL */
+nav > ul > li {
+    position: relative; 
+    margin-right: 20px;
+}
+
+nav > ul > li > a {
+    color: var(--blanco);
+    font-weight: 500;
+    padding: 10px 15px;
+    border-radius: 4px;
+}
+
+nav > ul > li > a:hover {
+    background-color: var(--color-primario);
+    color: var(--blanco);
+}
+
+/* ======================================================= */
+/* 3. ESTILOS DEL MENÚ DESPLEGABLE (Dropdown)              */
+/* ======================================================= */
+
+/* Contenedor principal del desplegable (el li) */
+.dropdown {
+    position: relative; 
+    display: inline-block;
+}
+
+/* El botón visible ("Categorías ▾") */
+.dropbtn {
+    /* Hereda estilos del nav > ul > li > a */
+    cursor: pointer;
+}
+
+/* Contenido del desplegable (ul) */
+.dropdown-content {
+    display: none;             
+    position: absolute;        
+    background-color: white;   
+    min-width: 200px;          
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 9999;             
+    top: 100%;                 
+    left: 0;                   
+    border-radius: 4px;
+    overflow: hidden; 
+}
+
+/* Clase activada por JavaScript para mostrar el menú */
+.mostrar {
+    display: block;
+}
+
+/* Contenedor del li dentro del desplegable */
+.dropdown-content li {
+    display: block; 
+    width: 100%; 
+    margin: 0; 
+    border-bottom: 1px solid #eee; 
+    text-align: left;
+}
+
+.dropdown-content li:last-child {
+    border-bottom: none; 
+}
+
+.dropdown-content li a {
+    display: block;
+    padding: 10px 20px;
+    color: var(--color-texto); 
+    font-size: 1em;
+}
+
+.dropdown-content li a:hover {
+    background-color: var(--color-primario);
+    color: white;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: #eee;
+    margin: 5px 0;
+}
+
+/* ======================================================= */
+/* 4. ESTILOS DE FORMULARIO (Login/Registro)               */
+/* ======================================================= */
+
+.form-card {
+    max-width: 450px; 
+    margin: 50px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--color-fondo);
+}
+
+.form-title {
+    color: var(--color-secundario);
+    font-size: 2em;
+    border-bottom: 2px solid var(--color-primario);
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+}
+
+.form-field {
+    margin-bottom: 20px;
+}
+
+.form-field label {
+    display: block;
+    font-weight: bold;
+    color: var(--color-secundario);
+    margin-bottom: 5px;
+    font-size: 0.95em;
+}
+
+.form-field input[type="text"],
+.form-field input[type="password"],
+.form-field input[type="email"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+.form-field input:focus {
+    border-color: var(--color-primario);
+    outline: none;
+    box-shadow: 0 0 5px rgba(26, 188, 156, 0.5);
+}
+
+/* Botón de envío */
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-primario); 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    font-weight: bold;
+    margin-top: 10px;
+    box-shadow: 0 4px #16a085; /* Sombra 3D sutil */
+}
+
+.btn-submit:hover {
+    background-color: #16a085; 
+    box-shadow: 0 2px #16a085; 
+    transform: translateY(2px); 
+}
+
+.btn-submit:active {
+    background-color: #108068; 
+    box-shadow: none;
+    transform: translateY(4px); 
+}
+
+.error-text {
+    color: #e74c3c; 
+    font-size: 0.85em;
+    display: block;
+    margin-top: 5px;
+}
+
+/* ======================================================= */
+/* 5. CONTENEDOR PRINCIPAL (MAIN)                          */
+/* ======================================================= */
+.container {
+    max-width: 1100px;
+    margin: 40px auto; 
+    padding: 20px;
+    background-color: var(--blanco); 
+    border-radius: 8px;
+    box-shadow: var(--sombra);
+    width: 90%; 
+    flex: 1; 
+}
+
+
+/* =======================================
+   6. FOOTER MINIMALISTA (Solo Copyright)
+   ======================================= */
+
+footer {
+    background-color: var(--color-secundario); 
+    color: #bdc3c7; 
+    padding: 15px 0; 
+    font-size: 0.9em;
+}
+
+.footer-bottom-minimal {
+    text-align: center;
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+.footer-bottom-minimal p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+
+/* ======================================================= */
+/* 7. RESPONSIVE (CELULARES)                               */
+/* ======================================================= */
+@media (max-width: 768px) {
+    
+    /* Navbar: Se vuelve vertical */
+    nav > ul {
+        flex-direction: column; 
+        height: auto;
+        padding: 10px 0;
+    }
+
+    nav > ul > li {
+        margin: 5px 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    /* El desplegable se adapta al modo vertical */
+    .dropdown-content {
+        position: relative; /* Cambia a position relative para empujar el contenido */
+        box-shadow: none;
+        width: 100%;
+        left: 0;
+        transform: none; 
+        background-color: #34495e; 
+    }
+    
+    .dropdown-content li a {
+        color: #ddd; 
+    }
+
+    /* Contenedor principal */
+    .container {
+        margin: 20px auto;
+        padding: 15px;
+    }
+}

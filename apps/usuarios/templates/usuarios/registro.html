@@ -1,7 +1,39 @@
-<h2>Registro de Nuevo Usuario</h2>
+{% extends 'base.html' %}
+{% load static %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrarse</button>
-</form>
+{% block title %}Registro de Usuario{% endblock title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock extra_css %}
+
+{% block contenido %}
+
+    <div class="form-card mx-auto"> 
+        <h2 class="form-title text-center mb-4">📝 Registrar Nuevo Usuario</h2>
+        
+        <form method="post" class="form-body">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="form-field">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="help-text">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                        <small class="error-text">{{ field.errors }}</small>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn-submit">Registrar</button>
+        </form>
+
+        <p class="mt-4 text-center">
+            ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia Sesión</a>
+        </p>
+    </div>
+
+{% endblock contenido %}
