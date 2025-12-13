@@ -15,6 +15,10 @@ from apps.comentarios.models import Comentario
 # Importaciones de Vistas Basadas en Clases (CBV) y Mixins de Seguridad
 from django.views.generic import CreateView, UpdateView, DeleteView 
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin, UserPassesTestMixin 
+from django.contrib.auth import get_user_model
+
+
+Perfil = get_user_model()
 
 
 # 1. Vista para la lista de publicaciones (Función, mejorada para categorías)
@@ -57,25 +61,62 @@ def detalle_publicacion(request, pk, slug):
     # Obtener solo los comentarios aprobados de esta publicación
     comentarios = publicacion.comentarios.filter(aprobado=True) 
     
-    # 🚨 CORRECCIÓN CLAVE: Inicializar el formulario aquí para pasarlo al contexto
-    comentario_form = ComentarioForm() 
+    comentario_form = None # Inicializamos con None
     
+    if request.user.is_authenticated: # Solo si esta logueado, podemos procesar o mostrar el formulario.
+        if request.method == 'POST':
+            comentario_form = ComentarioForm(data=request.POST)
+            if comentario_form.is_valid():
+                print("-------VALIDACIÓN EXITOSA. COMENTARIO GUARDADO--------")
+
+                nuevo_comentario = comentario_form.save(commit=False)
+                nuevo_comentario.publicacion = publicacion
+                nuevo_comentario.autor = request.user # Asigna el usuario logueado
+                nuevo_comentario.save()
+                return redirect('publicaciones:detalle', pk=publicacion.pk, slug=publicacion.slug)
+            
+            else:
+                print("VALIDACIÓN FALLÓ.")
+                print("ERRORES:", comentario_form.errors)
+        
+        
+        else:
+            # Si es GET, inicializamos el formulario limpio.
+            comentario_form = ComentarioForm() 
+            
+
+
     contexto = {
         'publicacion': publicacion,
         'comentarios': comentarios,      
-        'form': comentario_form,
+        'comentario_form': comentario_form, # Usamos 'comentario_form' para dar consistencia.
     }
     
     return render(request, 'publicaciones/detalle_publicacion.html', contexto)
 
 
+class AutorOAdminCrearMixin(UserPassesTestMixin):
+    """Permite el acceso solo si el usuario tiene rol 'Admin' o 'Autor'."""
+    # 🚨 NOTA: DEBES usar los valores reales de tu campo 'rol' (ej: '1', '2' si usaste CharField con números)
+    def test_func(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return False
+        
+        # Asumiendo que tu modelo Perfil tiene una propiedad 'rol' con valores de cadena:
+        return user.rol in ['Admin', 'Autor'] 
+        # Si tu campo rol usa las constantes numéricas '1' y '2'
+        # return str(user.rol) in ['1', '2']
+
+
+
+
+
 # 3. Vista para crear una publicación (Clase)
-class PublicacionCrearView(PermissionRequiredMixin, CreateView):
+class PublicacionCrearView(LoginRequiredMixin, AutorOAdminCrearMixin, CreateView):
     """
-    Permite a los Colaboradores crear una publicación.
+    Permite a los Autores y ADMINS crear una publicación.
     """
-    # 🚨 RESTRICCIÓN Nivel 3: Solo si tiene el permiso asignado al grupo COLABORADORES 🚨
-    permission_required = 'publicaciones.add_publicacion'
     
     model = Publicacion
     form_class = PublicacionForm 
@@ -93,12 +134,10 @@ class PublicacionCrearView(PermissionRequiredMixin, CreateView):
 
 
 # 4. Vista para editar una publicación (Clase)
-class PublicacionEditarView(PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
+class PublicacionEditarView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """
-    Permite al autor (Colaborador) editar su propia publicación. 
+    Permite al autor (Colaborador) o al ADMIN editar su propia publicación. 
     """
-    # 🚨 RESTRICCIÓN Nivel 3: El usuario debe tener permiso para editar cualquier publicación 🚨
-    permission_required = 'publicaciones.change_publicacion' 
 
     model = Publicacion
     form_class = PublicacionForm 
@@ -108,7 +147,7 @@ class PublicacionEditarView(PermissionRequiredMixin, UserPassesTestMixin, Update
     def get_success_url(self):
         return reverse('publicaciones:detalle', kwargs={'pk': self.object.pk, 'slug': self.object.slug})
     
-    # Método CRÍTICO: Comprueba si el usuario logueado es el autor
+    # Método CRÍTICO: Comprueba si el usuario logueado es el autor o tiene el permiso global.
     def test_func(self):
         publicacion = self.get_object()
         # Permitir la edición si es el autor O si el usuario tiene el permiso de cambio global
@@ -150,12 +189,11 @@ def publicaciones_por_categoria(request, slug_categoria):
     return render(request, 'publicaciones/lista_publicaciones.html', contexto)
 
 # 6. Vista para eliminar una publicación (AÑADIDO PARA COMPLETAR EL CRUD)
-class PublicacionEliminarView(PermissionRequiredMixin, UserPassesTestMixin, DeleteView):
+class PublicacionEliminarView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """
-    Permite al autor (Colaborador) eliminar su propia publicación.
+    Permite al autor (Colaborador) o al ADMIN eliminar su propia publicación.
     """
-    # 🚨 RESTRICCIÓN Nivel 3
-    permission_required = 'publicaciones.delete_publicacion'
+
     model = Publicacion
     template_name = 'publicaciones/publicacion_confirm_delete.html' # Debes crear esta plantilla
     success_url = reverse_lazy('publicaciones:lista') 

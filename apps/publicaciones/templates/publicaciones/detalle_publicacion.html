@@ -20,6 +20,7 @@
         <hr>
 
         {# LÓGICA DE EDICIÓN: El botón solo aparece si el usuario logueado es el autor #}
+        {# Actualmente solo verifica que el usuario logueado sea el autor (funcional con el test_func) #}
         {% if user.is_authenticated and user == publicacion.autor %}
             <p>
                 {# Usamos la URL 'publicaciones:editar' que definimos en urls.py #}
@@ -33,10 +34,10 @@
 
     <hr>
     
-    {# 🚨 CORRECCIÓN 1: Usar publicacion.comentarios.all para acceder a la lista 🚨 #}
-    <h3 class="mt-4">Comentarios ({{ publicacion.comentarios.count }})</h3>
+    {# 🚨 CORRECCIÓN 1: Usar la variable 'comentarios' pasada desde la vista (ya filtrada) #}
+    <h3 class="mt-4">Comentarios ({{ comentarios|length }})</h3>
     
-    {% for comentario in publicacion.comentarios.all %}
+    {% for comentario in comentarios %}
         <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
             <p>
                 <strong>{{ comentario.autor.username }}</strong> dice:
@@ -45,7 +46,7 @@
             <p>{{ comentario.contenido }}</p>
             
             {# LÓGICA DE EDICIÓN/ELIMINACIÓN DE COMENTARIO #}
-            {% if user.is_authenticated and user == comentario.autor or user.is_superuser %}
+            {% if user.is_superuser or user.is_authenticated and user == comentarios.autor %}
                 <small>
                     <a href="{% url 'comentarios:editar' comentario.pk %}">Editar</a> |
                     <a href="{% url 'comentarios:eliminar' comentario.pk %}">Eliminar</a>
@@ -58,15 +59,14 @@
 
     <hr>
 
-    {# 🚨 SECCIÓN COMENTAR: Usamos 'form' si es el nombre con el que se pasa desde la vista 🚨 #}
-    {% if user.is_authenticated %}
+    {# 🚨 CORRECCIÓN 2: Usar 'comentario_form' y enviar a la misma URL 🚨 #}
+    {% if user.is_authenticated and comentario_form %}
         <h4>Deja tu comentario</h4>
-        {# El action del formulario debe apuntar a la URL de tu vista agregar_comentario #}
-        <form method="post" action="{% url 'comentarios:agregar' publicacion_id=publicacion.pk %}">
+        <form method="post">
             {% csrf_token %}
             
-            {# Asumo que el formulario se llama 'form' o 'comentario_form' en la vista #}
-            {{ form.as_p }} 
+            {# El comentario tiene el nombre de 'comentario_form' en la vista (publicacion/views.py) #}
+            {{ comentario_form.as_p }} 
             
             <button type="submit">Enviar Comentario</button>
         </form>

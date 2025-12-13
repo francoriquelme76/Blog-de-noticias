@@ -29,7 +29,7 @@ class Comentario(models.Model):
     fecha_creacion = models.DateTimeField(default=timezone.now) 
     
     # 5. Campo de Moderación
-    aprobado = models.BooleanField(default=False) 
+    aprobado = models.BooleanField(default=True) 
 
     class Meta:
         # Ordena del más antiguo al más reciente
