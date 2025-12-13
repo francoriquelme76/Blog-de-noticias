@@ -9,9 +9,9 @@ class Perfil(AbstractUser):
     """
     
     # Definición de las constantes de Roles
-    ADMIN = 1
-    AUTOR = 2
-    REGISTRADO = 3
+    ADMIN = '1'
+    AUTOR = '2'
+    REGISTRADO = '3'
     
     ROLES_CHOICES = (
         (ADMIN, 'Administrador'),
@@ -19,7 +19,7 @@ class Perfil(AbstractUser):
         (REGISTRADO, 'Usuario Registrado'),
     )
 
-    rol = models.CharField(max_length=10, choices=ROLES_CHOICES, default='Usuario')
+    rol = models.CharField(max_length=10, choices=ROLES_CHOICES, default='REGISTRADO')
 
     #Intento de solucion para evitar el CLASH con el modelo User predeterminado
 
