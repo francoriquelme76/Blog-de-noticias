@@ -14,46 +14,58 @@
 </head>
 <body>
 
-    <header>
-        <h1><a href="{% url 'publicaciones:lista' %}">BLOG DE NOTICIAS</a></h1>
+    {# 🚨 INICIO DE LA SECCIÓN CORREGIDA: Header con Flexbox para separar Inicio y Auth 🚨 #}
+    <header style="padding: 10px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center;">
         
-        <nav>
-            {# 1. Enlace a la lista principal #}
-            <a href="{% url 'publicaciones:lista' %}">Inicio</a>
+        <h1><a href="{% url 'publicaciones:lista' %}" style="text-decoration: none; color: #333;">BLOG DE NOTICIAS</a></h1>
+        
+        <div style="display: flex; align-items: center;">
             
-            {# 2. LÓGICA DE REGISTRO/INICIO DE SESIÓN #}
-            {% if user.is_authenticated %}
-                <span>Hola, <b>{{ user.username }}</b> | </span>
-                
-                {# Enlace de Cerrar Sesión #}
-                <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" style="background: none; border: none; color: inherit; padding: 0; cursor: pointer;">
-                        Cerrar Sesión
-                    </button>
-                </form>
+            {# NAV PRINCIPAL (INICIO) #}
+            <nav class="nav-principal" style="margin-right: 20px;">
+                <a href="{% url 'publicaciones:lista' %}" style="text-decoration: none; padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; background-color: #f8f8f8;">
+                    🏠 Inicio
+                </a>
+            </nav>
 
-                {# 3. Botón para crear publicación (usa la variable de la vista) #}
-                {% if puede_crear %} 
-                    | <a href="{% url 'publicaciones:crear' %}">
-                        <button>Registrar Publicacion</button>
+            {# NAV AUTENTICACIÓN (LOGIN / REGISTRO / USUARIO) #}
+            <nav class="nav-auth">
+                {% if user.is_authenticated %}
+                    <span>Hola, <b>{{ user.username }}</b> | </span>
+                    
+                    {# Enlace de Cerrar Sesión #}
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" style="background: none; border: none; color: #dc3545; padding: 0; cursor: pointer; font-weight: bold;">
+                            Cerrar Sesión
+                        </button>
+                    </form>
+
+                    {# Botón para crear publicación #}
+                    {% if puede_crear %} 
+                        | <a href="{% url 'publicaciones:crear' %}" style="margin-left: 10px;">
+                            <button style="background-color: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Registrar Publicacion</button>
+                        </a>
+                    {% endif %}
+                    
+                    {# Enlace Admin #}
+                    {% if user.is_superuser %}
+                        | <a href="{% url 'admin:index' %}" style="margin-left: 10px;">Panel Admin</a>
+                    {% endif %}
+
+                {% else %}
+                    {# Botones destacados para visitantes #}
+                    <a href="{% url 'login' %}" style="text-decoration: none; padding: 5px 10px; border: 1px solid #007bff; border-radius: 4px; background-color: #e9f5ff; color: #007bff; font-weight: bold; margin-right: 10px;">
+                        Iniciar Sesión
+                    </a>
+                    <a href="{% url 'usuarios:registro' %}" style="text-decoration: none; padding: 5px 10px; border: 1px solid #28a745; border-radius: 4px; background-color: #e6ffed; color: #28a745; font-weight: bold;">
+                        Registrarse
                     </a>
                 {% endif %}
-                
-                {# 4. Puedes añadir un enlace al Admin si eres superusuario (opcional) #}
-                {% if user.is_superuser %}
-                    | <a href="{% url 'admin:index' %}">Panel Admin</a>
-                {% endif %}
-
-            {% else %}
-                {# 🚨 CORRECCIÓN CLAVE: Usamos 'usuarios:registro' para resolver el NoReverseMatch 🚨 #}
-                <a href="{% url 'login' %}">Iniciar Sesión</a>
-                <span style="margin: 0 5px;">|</span>
-                <a href="{% url 'usuarios:registro' %}">Registrarse</a> 
-            {% endif %}
-
-        </nav>
+            </nav>
+        </div>
     </header>
+    {# 🚨 FIN DE LA SECCIÓN CORREGIDA 🚨 #}
 
     <main class="container">
         {% block contenido %}

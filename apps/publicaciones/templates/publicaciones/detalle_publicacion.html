@@ -15,7 +15,7 @@
 
         <hr>
 
-        <p>{{ publicacion.contenido }}</p>
+        <p>{{ publicacion.contenido|linebreaksbr }}</p>
 
         <hr>
 
@@ -33,22 +33,22 @@
 
     <hr>
     
-    {# 🚨 CORRECCIÓN 1: Usar publicacion.comentarios.all para acceder a la lista 🚨 #}
+    {# 🚨 COMENTARIOS 🚨 #}
     <h3 class="mt-4">Comentarios ({{ publicacion.comentarios.count }})</h3>
     
     {% for comentario in publicacion.comentarios.all %}
-        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-            <p>
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
+            <p style="margin-bottom: 5px;">
                 <strong>{{ comentario.autor.username }}</strong> dice:
-                <small style="float: right;">{{ comentario.fecha_creacion|date:"d M Y H:i" }}</small>
+                <small style="float: right; color: #6c757d;">{{ comentario.fecha_creacion|date:"d M Y H:i" }}</small>
             </p>
-            <p>{{ comentario.contenido }}</p>
+            <p style="margin-bottom: 5px;">{{ comentario.contenido }}</p>
             
             {# LÓGICA DE EDICIÓN/ELIMINACIÓN DE COMENTARIO #}
             {% if user.is_authenticated and user == comentario.autor or user.is_superuser %}
                 <small>
-                    <a href="{% url 'comentarios:editar' comentario.pk %}">Editar</a> |
-                    <a href="{% url 'comentarios:eliminar' comentario.pk %}">Eliminar</a>
+                    <a href="{% url 'comentarios:editar' comentario.pk %}" style="color: #007bff;">Editar</a> |
+                    <a href="{% url 'comentarios:eliminar' comentario.pk %}" style="color: #dc3545;">Eliminar</a>
                 </small>
             {% endif %}
         </div>
@@ -58,20 +58,29 @@
 
     <hr>
 
-    {# 🚨 SECCIÓN COMENTAR: Usamos 'form' si es el nombre con el que se pasa desde la vista 🚨 #}
+    {# 🚨 SECCIÓN COMENTAR: Formulario o Enlaces de Acceso 🚨 #}
     {% if user.is_authenticated %}
         <h4>Deja tu comentario</h4>
         {# El action del formulario debe apuntar a la URL de tu vista agregar_comentario #}
         <form method="post" action="{% url 'comentarios:agregar' publicacion_id=publicacion.pk %}">
             {% csrf_token %}
             
-            {# Asumo que el formulario se llama 'form' o 'comentario_form' en la vista #}
+            {# Asumo que el formulario se llama 'form' en la vista #}
             {{ form.as_p }} 
             
             <button type="submit">Enviar Comentario</button>
         </form>
     {% else %}
-        <p>Debes <a href="{% url 'login' %}">iniciar sesión</a> para comentar.</p>
+        {# ----------------------------------------------------------------------------------- #}
+        {# 🚨 MENSAJE DE REGISTRO/LOGIN 🚨 #}
+        <div style="background-color: #ffe; border: 1px solid #ffd700; padding: 15px; margin-top: 20px; border-radius: 5px;">
+            <p style="font-weight: bold; margin-bottom: 10px;">Para dejar un comentario, debes iniciar registrarte.</p>
+            
+            <a href="{% url 'usuarios:registro' %}" style="padding: 8px 15px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px;">
+                Registrarse
+            </a>
+        </div>
+        
     {% endif %}
 
 {% endblock contenido %}
