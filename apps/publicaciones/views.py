@@ -13,7 +13,6 @@ from apps.comentarios.forms import ComentarioForm
 from apps.comentarios.models import Comentario 
 
 # Importaciones de Vistas Basadas en Clases (CBV) y Mixins de Seguridad
-# NOTA: Mantenemos UserPassesTestMixin para las vistas de Edición/Eliminación que chequean autoría
 from django.views.generic import CreateView, UpdateView, DeleteView 
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin, UserPassesTestMixin 
 from django.contrib.auth import get_user_model
@@ -31,8 +30,9 @@ def lista_publicaciones(request):
     publicaciones = Publicacion.objects.all().order_by('-fecha_creacion')
     categorias = Categoria.objects.all()
     
-    # Verificamos si el usuario tiene el permiso de crear publicaciones (Colaborador)
-    puede_crear = request.user.is_authenticated and request.user.has_perm('publicaciones.add_publicacions')
+    # 🔑 CORRECCIÓN CRÍTICA: La verificación de permisos usa la cadena SINGULAR ('publicacion')
+    # Esto asegura que el botón "Crear" se muestre correctamente en la plantilla.
+    puede_crear = request.user.is_authenticated and request.user.has_perm('publicaciones.add_publicacion')
     
     contexto = {
         'object_list': publicaciones,
@@ -84,32 +84,20 @@ def detalle_publicacion(request, pk, slug):
             
     contexto = {
         'publicacion': publicacion,
-        'comentarios': comentarios,      
+        'comentarios': comentarios,     
         'comentario_form': comentario_form, # Usamos 'comentario_form' para dar consistencia.
     }
     
     return render(request, 'publicaciones/detalle_publicacion.html', contexto)
 
 
-# ⚠️ ELIMINAMOS ESTA CLASE. Su lógica de 'user.rol' es la que causó el error.
-# class AutorOAdminCrearMixin(UserPassesTestMixin):
-#     """Permite el acceso solo si el usuario tiene rol 'Admin' o 'Autor'."""
-#     def test_func(self):
-#         user = self.request.user
-#         if not user.is_authenticated:
-#             return False
-        
-#         return user.rol in ['Admin', 'Autor'] 
-
-
 # 3. Vista para crear una publicación (Clase)
-# 🔑 CORRECCIÓN: Cambiamos 'AutorOAdminCrearMixin' por 'PermissionRequiredMixin'
 class PublicacionCrearView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """
-    Permite a los usuarios con el permiso 'publicaciones.add_publicacions' (ej. Grupo Colaboradores) crear una publicación.
+    Permite a los usuarios con el permiso 'publicaciones.add_publicacion' (ej. Grupo Colaboradores) crear una publicación.
     """
-    # Revisa si el usuario o su grupo tiene el permiso para agregar publicaciones
-    permission_required = 'publicaciones.add_publicacions'
+    # 🔑 CORRECCIÓN CRÍTICA: Revisa si el usuario o su grupo tiene el permiso SINGULAR.
+    permission_required = 'publicaciones.add_publicacion'
     
     model = Publicacion
     form_class = PublicacionForm 
@@ -143,8 +131,8 @@ class PublicacionEditarView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
     # Método CRÍTICO: Comprueba si el usuario logueado es el autor o tiene el permiso global.
     def test_func(self):
         publicacion = self.get_object()
-        # Permitir la edición si es el autor O si el usuario tiene el permiso de cambio global
-        return publicacion.autor == self.request.user or self.request.user.has_perm('publicaciones.change_publicacions') # Corregí 'publicacion' a 'publicacions' por consistencia con tu app
+        # 🔑 CORRECCIÓN: Usamos la cadena SINGULAR ('publicacion')
+        return publicacion.autor == self.request.user or self.request.user.has_perm('publicaciones.change_publicacion')
 
     # Sobreescribir form_valid para regenerar el slug si el título cambia
     def form_valid(self, form):
@@ -165,8 +153,8 @@ def publicaciones_por_categoria(request, slug_categoria):
     # Pasamos todas las categorías para que el menú de categorías siga funcionando
     categorias = Categoria.objects.all()
     
-    # Verificamos si el usuario tiene el permiso de crear publicaciones (Colaborador)
-    puede_crear = request.user.is_authenticated and request.user.has_perm('publicaciones.add_publicacions')
+    # 🔑 CORRECCIÓN: Usamos la cadena SINGULAR ('publicacion')
+    puede_crear = request.user.is_authenticated and request.user.has_perm('publicaciones.add_publicacion')
     
     contexto = {
         'object_list': publicaciones,
@@ -191,7 +179,8 @@ class PublicacionEliminarView(LoginRequiredMixin, UserPassesTestMixin, DeleteVie
     # Solo permite eliminar si es el autor o tiene el permiso global de eliminar
     def test_func(self):
         publicacion = self.get_object()
-        return publicacion.autor == self.request.user or self.request.user.has_perm('publicaciones.delete_publicacions') # Corregí 'publicacion' a 'publicacions' por consistencia con tu app
+        # 🔑 CORRECCIÓN: Usamos la cadena SINGULAR ('publicacion')
+        return publicacion.autor == self.request.user or self.request.user.has_perm('publicaciones.delete_publicacion')
 
 # 7. Vista para la página Acerca de (FUNCIÓN AÑADIDA PARA RESOLVER EL AttributeError)
 def acerca_de(request):
